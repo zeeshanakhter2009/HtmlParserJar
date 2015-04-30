@@ -23,34 +23,12 @@ import org.jsoup.select.Elements;
  */
 public class HtmlParser {
 
-    public static void main1(String[] args) {
-        try {
-            Document doc;
-            // need http protocol
-            doc = Jsoup.connect("http://google.com").get();
-
-            // get page title
-            String title = doc.title();
-            System.out.println("title : " + title);
-
-            // get all links
-            Elements links = doc.select("a[href]");
-            for (Element link : links) {
-
-                // get the value from href attribute
-                System.out.println("\nlink : " + link.attr("href"));
-                System.out.println("text : " + link.text());
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
+    
     public static void main(String[] args) {
 
-        String url = "http://www.expatriates.com/classifieds/bhr";
+//        String url = "http://www.expatriates.com/classifieds/bhr";
 //        String url = "http://www.expatriates.com/classifieds/bhr/forsale/";
+        String url = "http://www.expatriates.com/classifieds/bhr/housingavailable/";
         int counter = 1;
         //  List<Data> urlList = new ArrayList<Data>();
         HashSet<Data> urlList = new HashSet<Data>();
@@ -175,19 +153,19 @@ public class HtmlParser {
                 }
             }
 
-            String masthead = doc.select("div.container > div.main-content > div.clearfix > div.post-body").text();
-            System.out.println("Details ::: " + masthead);
-
-            Element addDetails = doc.select("div.container > div.main-content > div.clearfix > div.col_7.post-info > ul.no-bullet").first();
-            Elements divChildren = addDetails.children();
-            for (Element elem : divChildren) {
-                System.out.println(elem.text());
-            }
-
-            Elements contactNumber = doc.select("a[href*=tel:]");
-            for (Element src : contactNumber) {
-                System.out.println("Contact Number ::: " + src.attr("href").replace("tel:", "tel:+973"));
-            }
+//            String masthead = doc.select("div.container > div.main-content > div.clearfix > div.post-body").text();
+//            System.out.println("Details ::: " + masthead);
+//
+//            Element addDetails = doc.select("div.container > div.main-content > div.clearfix > div.col_7.post-info > ul.no-bullet").first();
+//            Elements divChildren = addDetails.children();
+//            for (Element elem : divChildren) {
+//                System.out.println(elem.text());
+//            }
+//
+//            Elements contactNumber = doc.select("a[href*=tel:]");
+//            for (Element src : contactNumber) {
+//                System.out.println("Contact Number ::: " + src.attr("href").replace("tel:", "tel:+973"));
+//            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
