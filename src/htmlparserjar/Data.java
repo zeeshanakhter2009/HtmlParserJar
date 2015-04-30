@@ -1,11 +1,12 @@
 package htmlparserjar;
 
+import java.util.List;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author CSDVZAK
@@ -14,6 +15,7 @@ public class Data {
 
     String url;
     String title;
+    String imagesList;
 
     public Data() {
     }
@@ -21,6 +23,14 @@ public class Data {
     public Data(String url, String title) {
         this.url = url;
         this.title = title;
+    }
+
+    public String getImagesList() {
+        return imagesList;
+    }
+
+    public void setImagesList(String imagesList) {
+        this.imagesList = imagesList;
     }
 
     public String getUrl() {

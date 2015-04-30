@@ -1,9 +1,9 @@
 package htmlparserjar;
 
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.jsoup.Jsoup;
@@ -100,8 +100,9 @@ public class HtmlParser {
                         if (!urlList.contains(data)) {
 //                            System.out.println("url =" + url.length());
 //                            System.out.println("link.text() =" + link.text().length());
-//                            System.out.println("\nlink ::: " + counter++ + " " + url);
-//                            System.out.println("text :::          " + link.text());
+                            System.out.println("\nlink ::: " + counter++ + " " + url);
+                            System.out.println("text :::          " + link.text());
+                            data.setImagesList(getImages(data.getUrl()));
                             urlList.add(data);
                         }
                     }
@@ -120,12 +121,16 @@ public class HtmlParser {
             writer.append("URL");
             writer.append(',');
             writer.append("Title");
+            writer.append(',');
+            writer.append("Images");
             writer.append('\n');
             for (Data data : urlList) {
 
                 writer.append(data.getUrl());
                 writer.append(',');
                 writer.append(data.getTitle());
+                writer.append(',');
+                writer.append(((String) data.getImagesList()));
                 writer.append('\n');
             }
 
@@ -137,66 +142,8 @@ public class HtmlParser {
     }
 
     public static String removeSpecialCharacter(String albumName) {
-//        if (albumName.contains(" & ")) {
-//            albumName = albumName.replace(" & ", " and ");
-//        }
-//       
-//        if (albumName.contains("'")) {
-//            albumName = albumName.replace("'", "");
-//        }
-//        if (albumName.contains(",")) {
-//            albumName = albumName.replace(",", " ");
-//        }
-//        if (albumName.contains(":")) {
-//            albumName = albumName.replace(":", " ");
-//        }
-//        if (albumName.contains("?")) {
-//            albumName = albumName.replace("?", " ");
-//        }
-//        
-//        if (albumName.contains("-")) {
-//            albumName = albumName.replace("-", " ");
-//        }
-//        if (albumName.contains("&")) {
-//            albumName = albumName.replace("&", " and ");
-//        }
-//        if (albumName.contains("__")) {
-//            albumName = albumName.replace("__", " ");
-//        }
-//        if (albumName.contains("___")) {
-//            albumName = albumName.replace("___", " ");
-//        }
-//        if (albumName.contains("____")) {
-//            albumName = albumName.replace("____", " ");
-//        }
-//        if (albumName.contains("!")) {
-//            albumName = albumName.replace("!", " ");
-//        }
-//
-//        if (albumName.contains("\"")) {
-//            albumName = albumName.replace("\"", " ");
-//        }
-//        if (albumName.contains("'")) {
-//            albumName = albumName.replace("'", "");
-//        }
-//        if (albumName.contains("_/_")) {
-//            albumName = albumName.replace("_/_", " ");
-//        }
-//        if (albumName.contains("/")) {
-//            albumName = albumName.replace("/", " ");
-//        }
-//        if (albumName.contains("%")) {
-//            albumName = albumName.replace("%", "");
-//        }
-
-      
 
         albumName = Normalizer.normalize(albumName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-
-        //alphaOnly         
-        //String alphaOnly = albumName.replaceAll("[^a-zA-Z]+","");
-        // alphaAndDigits 
-        //albumName = albumName.replaceAll("[^a-zA-Z0-9]+", "");
         albumName = albumName.replace("_", " ");
         albumName = albumName.replace("BHD ", "Bahraini Dinar ");
         albumName = albumName.replace(" BHD ", " Bahraini Dinar ");
@@ -207,4 +154,55 @@ public class HtmlParser {
         albumName = albumName.replace(" br ", " Bed Rooms ");
         return albumName;
     }
+
+    public static String getImages(String url) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36").get();
+            Elements media = doc.select("[src]");
+            print("\nMedia: (%d)", media.size());
+            for (Element src : media) {
+                if (src.tagName().equals("img")) {
+                    System.out.println(src.attr("abs:src"));
+                    stringBuilder.append(src.attr("abs:src"));
+                    stringBuilder.append("=");
+//                    print(" * %s: <%s> %sx%s (%s)",
+//                            src.tagName(), src.attr("abs:src"), src.attr("width"), src.attr("height"),
+//                            trim(src.attr("alt"), 20));
+                } else {
+                    //    print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
+                }
+            }
+            
+             String masthead = doc.select("div.container > div.main-content > div.clearfix > div.post-body").text();
+        System.out.println("Details ::: "+masthead );
+        Elements addDetails = doc.select("div.container > div.main-content > div.clearfix > div.col_7 post-info > ul.no-bullet > li");
+          for (Element src : addDetails) {
+        System.out.println("addDetails ::: "+src.getElementsByTag("li") );
+          }
+        Elements contactNumber = doc.select("a[href*=tel:]");
+         for (Element src : contactNumber) {
+        System.out.println("Contact Number ::: "+src.attr("href").replace("tel:", "tel:+973") );
+         }
+            
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
+    private static void print(String msg, Object... args) {
+        System.out.println(String.format(msg, args));
+    }
+
+    private static String trim(String s, int width) {
+        if (s.length() > width) {
+            return s.substring(0, width - 1) + ".";
+        } else {
+            return s;
+        }
+    }
+
 }
