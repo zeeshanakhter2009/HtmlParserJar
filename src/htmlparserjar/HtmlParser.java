@@ -101,7 +101,7 @@ public class HtmlParser {
 //                            System.out.println("url =" + url.length());
 //                            System.out.println("link.text() =" + link.text().length());
                             System.out.println("\nlink ::: " + counter++ + " " + url);
-                            System.out.println("text :::          " + link.text());
+                            //   System.out.println("text :::          " + link.text());
                             data.setImagesList(getImages(data.getUrl()));
                             urlList.add(data);
                         }
@@ -161,10 +161,10 @@ public class HtmlParser {
         try {
             Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36").get();
             Elements media = doc.select("[src]");
-            print("\nMedia: (%d)", media.size());
+            //  print("\nMedia: (%d)", media.size());
             for (Element src : media) {
                 if (src.tagName().equals("img")) {
-                    System.out.println(src.attr("abs:src"));
+                    // System.out.println(src.attr("abs:src"));
                     stringBuilder.append(src.attr("abs:src"));
                     stringBuilder.append("=");
 //                    print(" * %s: <%s> %sx%s (%s)",
@@ -174,19 +174,21 @@ public class HtmlParser {
                     //    print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
                 }
             }
-            
-             String masthead = doc.select("div.container > div.main-content > div.clearfix > div.post-body").text();
-        System.out.println("Details ::: "+masthead );
-        Elements addDetails = doc.select("div.container > div.main-content > div.clearfix > div.col_7 post-info > ul.no-bullet > li");
-          for (Element src : addDetails) {
-        System.out.println("addDetails ::: "+src.getElementsByTag("li") );
-          }
-        Elements contactNumber = doc.select("a[href*=tel:]");
-         for (Element src : contactNumber) {
-        System.out.println("Contact Number ::: "+src.attr("href").replace("tel:", "tel:+973") );
-         }
-            
-            
+
+            String masthead = doc.select("div.container > div.main-content > div.clearfix > div.post-body").text();
+            System.out.println("Details ::: " + masthead);
+
+            Element addDetails = doc.select("div.container > div.main-content > div.clearfix > div.col_7.post-info > ul.no-bullet").first();
+            Elements divChildren = addDetails.children();
+            for (Element elem : divChildren) {
+                System.out.println(elem.text());
+            }
+
+            Elements contactNumber = doc.select("a[href*=tel:]");
+            for (Element src : contactNumber) {
+                System.out.println("Contact Number ::: " + src.attr("href").replace("tel:", "tel:+973"));
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
