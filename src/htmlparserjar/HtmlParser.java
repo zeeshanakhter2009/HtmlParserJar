@@ -23,7 +23,6 @@ import org.jsoup.select.Elements;
  */
 public class HtmlParser {
 
-    
     public static void main(String[] args) {
 
 //        String url = "http://www.expatriates.com/classifieds/bhr";
@@ -40,8 +39,17 @@ public class HtmlParser {
 
     public static HashSet<Data> getLinks(String url, int counter, HashSet<Data> urlList) {
         try {
-            Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36").get();
+            String sFileName = "C:\\Zeeshan_Akhter_Data\\allLinks2015.csv";
+            FileWriter writer = new FileWriter(sFileName);
 
+            writer.append("URL");
+            writer.append(',');
+            writer.append("Title");
+            writer.append(',');
+            writer.append("Images");
+            writer.append('\n');
+
+            Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36").get();
             Elements links = doc.select("a[href]");
 
             for (Element link : links) {
@@ -62,7 +70,14 @@ public class HtmlParser {
 //
 //                            System.out.println("\nlink : " + counter++ + " " + url);
 //                            System.out.println("text :          " + link.text());
-                            urlList.add(data);
+
+                            writer.append(data.getUrl());
+                            writer.append(',');
+                            writer.append(data.getTitle());
+                            writer.append(',');
+                            writer.append(((String) data.getImagesList()));
+                            writer.append('\n');
+                            //   urlList.add(data);
                             urlList = getLinks(url, counter, urlList);
                         }
                     } else {
@@ -81,11 +96,21 @@ public class HtmlParser {
                             System.out.println("\nlink ::: " + counter++ + " " + url);
                             //   System.out.println("text :::          " + link.text());
                             data.setImagesList(getImages(data.getUrl()));
-                            urlList.add(data);
+
+                            writer.append(data.getUrl());
+                            writer.append(',');
+                            writer.append(data.getTitle());
+                            writer.append(',');
+                            writer.append(((String) data.getImagesList()));
+                            writer.append('\n');
+                            //  urlList.add(data);
                         }
                     }
                 }
             }
+
+            writer.flush();
+            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -166,7 +191,6 @@ public class HtmlParser {
 //            for (Element src : contactNumber) {
 //                System.out.println("Contact Number ::: " + src.attr("href").replace("tel:", "tel:+973"));
 //            }
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
